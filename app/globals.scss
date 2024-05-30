@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
+@layer base {
+    body {
+        @apply min-h-screen bg-gray-900 text-gray-200;
+        font-family: 'Figtree', sans-serif;
+    }
+
+    table {
+        @apply w-full border border-gray-700;
+
+        tbody {
+            td {
+                @apply border border-gray-700/75 p-1.5 text-center text-xs md:px-3 md:text-base;
+            }
+
+            tr {
+                @apply odd:bg-gray-800;
+            }
+        }
+        thead {
+            @apply bg-primary-500 text-black;
+        }
+
+        th {
+            @apply border border-gray-900/25 p-1.5 py-1 text-xs font-semibold md:px-3 md:text-lg;
+        }
+    }
+}
