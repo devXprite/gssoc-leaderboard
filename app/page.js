@@ -2,11 +2,13 @@ import LeaderboardTable from '@/components/LeaderboardTable';
 import { db } from '@/lib/db';
 import generateLeaderBoard from '@/utils/generateLeaderBoard';
 import consola from 'consola';
+import { headers } from 'next/headers';
 
 const getLeaderBoard = async () => {
-    const dbResponse = await db.leaderboard.findFirst({
+    const dbResponse = await db.leaderboard.findUnique({
         where: {
-            updatedAt: { gte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000) },
+            year: 2024,
+            // updatedAt: { gte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000) },
         },
         select: {
             updatedAt: true,
@@ -35,16 +37,18 @@ const getLeaderBoard = async () => {
 };
 
 const page = async () => {
+    headers();
     const { leaderboard, updatedAt } = await getLeaderBoard();
 
     return (
-        <div className="page">
+        <>
             <h2 className="mb-2 text-center text-3xl font-semibold text-primary-500 md:text-4xl">GSSoC LeaderBoard</h2>
 
             <p className="mb-10 text-center">
                 Last updated at{' '}
                 <span>
                     {new Date(updatedAt || new Date()).toLocaleString('en-IN', {
+                        timeZone: 'Asia/Kolkata',
                         dateStyle: 'medium',
                         timeStyle: 'short',
                     })}
@@ -52,7 +56,7 @@ const page = async () => {
             </p>
 
             <LeaderboardTable leaderboard={leaderboard} updatedAt={updatedAt} />
-        </div>
+        </>
     );
 };
 

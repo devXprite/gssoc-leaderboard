@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaList, FaSearch } from 'react-icons/fa';
 
-const RESULT_PER_PAGE = 30;
+const RESULT_PER_PAGE = 50;
 
 const LeaderboardTable = ({ leaderboard, updatedAt }) => {
     const [page, setPage] = useState(1);
@@ -73,6 +73,7 @@ const LeaderboardTable = ({ leaderboard, updatedAt }) => {
                                     <Link
                                         // href={user.url}
                                         // target="_blank"
+                                        prefetch={false}
                                         href={`/user/${user.login}`}
                                         className="flex items-center gap-1 hover:text-primary-500 hover:underline md:gap-4"
                                     >
@@ -95,6 +96,7 @@ const LeaderboardTable = ({ leaderboard, updatedAt }) => {
                         ))}
                     </tbody>
                 </table>
+                <p className="mt-2 w-full text-xs md:text-base text-right italic text-gray-400">* updates in every 24 hours</p>
             </div>
 
             <div className="mt-6">

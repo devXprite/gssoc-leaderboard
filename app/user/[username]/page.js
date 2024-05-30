@@ -2,16 +2,23 @@
 import { db } from '@/lib/db';
 import genrateUserPr from '@/utils/genrateUserPr';
 import consola from 'consola';
+import { headers } from 'next/headers';
 import { RiGitRepositoryLine } from 'react-icons/ri';
 
 const allowedLabels = ['level1', 'level2', 'level3'];
+
+export const generateMetadata = ({ params: { username } }) => {
+    return {
+        title: `@${username} | Pull Requests`,
+    };
+};
 
 const getUserPr = async username => {
     try {
         const user = await db.user.findUnique({
             where: {
                 username,
-                updatedAt: { gte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000) },
+                updatedAt: { gte: new Date(new Date().getTime() - 8 * 60 * 60 * 1000) },
             },
         });
 
@@ -44,10 +51,11 @@ const getUserPr = async username => {
 };
 
 const page = async ({ params: { username } }) => {
+    headers();
     const { pullRequests, updatedAt } = await getUserPr(username);
 
     return (
-        <div className="page">
+        <>
             <h3 className="mb-2 mt-6 text-center text-3xl font-semibold">
                 Pull Requests by <span className="text-center text-primary-500">@{username}</span>{' '}
             </h3>
@@ -55,6 +63,7 @@ const page = async ({ params: { username } }) => {
             <p className="mb-8 text-center">
                 Last updated at{' '}
                 {new Date(updatedAt || new Date()).toLocaleString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
                     dateStyle: 'medium',
                     timeStyle: 'short',
                 })}
@@ -79,8 +88,10 @@ const page = async ({ params: { username } }) => {
                         {pullRequests.map((pr, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td className="max-w-40 truncate text-left text-primary-400">{pr.repository.name}</td>
-                                <td className="max-w-96 truncate text-left">
+                                <td className="max-w-32 truncate text-left text-primary-400 md:max-w-40">
+                                    {pr.repository.name}
+                                </td>
+                                <td className="max-w-72 truncate text-left md:max-w-96">
                                     <a href={pr.url} target="_blank">
                                         {pr.titleHTML}
                                     </a>
@@ -97,7 +108,7 @@ const page = async ({ params: { username } }) => {
                                 <td>{pr?.commits?.totalCount}</td>
                                 <td>{pr.totalCommentsCount}</td>
                                 {/* <td>{pr?.changedFiles}</td> */}
-                                <td>
+                                <td className="whitespace-nowrap">
                                     {new Date(pr.mergedAt).toLocaleDateString('en-IN', {
                                         // dateStyle: 'medium',
                                         day: '2-digit',
@@ -107,12 +118,7 @@ const page = async ({ params: { username } }) => {
                                 </td>
                                 <td>
                                     {pr.closingIssuesReferences.nodes.map((issue, index) => (
-                                        <a
-                                            key={index}
-                                            target="_blank"
-                                            href={issue.url}
-                                            className="text-green-500"
-                                        >
+                                        <a key={index} target="_blank" href={issue.url} className="text-green-500">
                                             #{issue.number}
                                         </a>
                                     ))}
@@ -121,8 +127,11 @@ const page = async ({ params: { username } }) => {
                         ))}
                     </tbody>
                 </table>
+                <p className="mt-2 w-full text-right text-xs italic text-gray-400 md:text-base">
+                    * updates in every 8 hours
+                </p>
             </div>
-        </div>
+        </>
     );
 };
 

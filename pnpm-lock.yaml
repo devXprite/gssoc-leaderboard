@@ -20,9 +20,15 @@ dependencies:
   '@mui/material-nextjs':
     specifier: ^5.15.11
     version: 5.15.11(@emotion/cache@11.11.0)(@mui/material@5.15.18)(next@14.2.3)(react@18.3.1)
+  '@next/third-parties':
+    specifier: ^14.2.3
+    version: 14.2.3(next@14.2.3)(react@18.3.1)
   '@prisma/client':
     specifier: ^5.14.0
     version: 5.14.0(prisma@5.14.0)
+  '@vercel/analytics':
+    specifier: ^1.3.1
+    version: 1.3.1(next@14.2.3)(react@18.3.1)
   axios:
     specifier: ^1.6.8
     version: 1.6.8
@@ -565,6 +571,17 @@ packages:
     dev: false
     optional: true
 
+  /@next/third-parties@14.2.3(next@14.2.3)(react@18.3.1):
+    resolution: {integrity: sha512-j4E2xBSsEZq4VX2pVm3LpGltSwCxETic6glJWfHyYQvpoMdplCAYrQKpF+E9Gg3jfsrfmRAIdTE11m+biBCx1Q==}
+    peerDependencies:
+      next: ^13.0.0 || ^14.0.0
+      react: ^18.2.0
+    dependencies:
+      next: 14.2.3(react-dom@18.3.1)(react@18.3.1)(sass@1.74.1)
+      react: 18.3.1
+      third-party-capital: 1.0.20
+    dev: false
+
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -672,6 +689,22 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
+    dev: false
+
+  /@vercel/analytics@1.3.1(next@14.2.3)(react@18.3.1):
+    resolution: {integrity: sha512-xhSlYgAuJ6Q4WQGkzYTLmXwhYl39sWjoMA3nHxfkvG+WdBT25c563a7QhwwKivEOZtPJXifYHR1m2ihoisbWyA==}
+    peerDependencies:
+      next: '>= 13'
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      next: 14.2.3(react-dom@18.3.1)(react@18.3.1)(sass@1.74.1)
+      react: 18.3.1
+      server-only: 0.0.1
     dev: false
 
   /ansi-regex@5.0.1:
@@ -1571,6 +1604,10 @@ packages:
       loose-envify: 1.4.0
     dev: false
 
+  /server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
+    dev: false
+
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -1723,6 +1760,10 @@ packages:
     dependencies:
       any-promise: 1.3.0
     dev: true
+
+  /third-party-capital@1.0.20:
+    resolution: {integrity: sha512-oB7yIimd8SuGptespDAZnNkzIz+NWaJCu2RMsbs4Wmp9zSDUM8Nhi3s2OOcqYuv3mN4hitXc8DVx+LyUmbUDiA==}
+    dev: false
 
   /to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
