@@ -12,6 +12,9 @@
 
     table {
         @apply w-full border border-gray-700;
+        a {
+            @apply hover:underline;
+        }
 
         tbody {
             td {
@@ -29,5 +32,11 @@
         th {
             @apply border border-gray-900/25 p-1.5 py-1 text-xs font-semibold md:px-3 md:text-lg;
         }
+    }
+}
+
+@layer components {
+    .page {
+        @apply min-h-screen px-3 py-14;
     }
 }

@@ -7,16 +7,16 @@ const level_labels = {
     level3: 45,
 };
 
-async function getLeaderBoard() {
-    let leaderboard = {};
+async function generateLeaderBoard() {
+    let leaderboardObj = {};
 
     async function processPullRequests(pullRequests) {
         pullRequests.edges.forEach(edge => {
             const pr = edge.node;
             const user = pr.author;
 
-            if (!leaderboard[user.login]) {
-                leaderboard[user.login] = {
+            if (!leaderboardObj[user.login]) {
+                leaderboardObj[user.login] = {
                     avatar_url: user.avatarUrl,
                     login: user.login,
                     url: user.url,
@@ -37,21 +37,20 @@ async function getLeaderBoard() {
                 };
             }
 
+            leaderboardObj[user.login].totalPr++;
 
-                leaderboard[user.login].totalPr++;
-
-                for (const label of pr.labels.nodes) {
-                    if (label.name in level_labels) {
-                        leaderboard[user.login].scoreBreakdown[label.name] += level_labels[label.name];
-                        leaderboard[user.login].score += level_labels[label.name];
-                        leaderboard[user.login].prBreakdown[label.name]++;
-                        break;
-                    }
-
-                    leaderboard[user.login].scoreBreakdown.others += 1;
-                    leaderboard[user.login].score += 1;
-                    leaderboard[user.login].prBreakdown.others++;
+            for (const label of pr.labels.nodes) {
+                if (label.name in level_labels) {
+                    leaderboardObj[user.login].scoreBreakdown[label.name] += level_labels[label.name];
+                    leaderboardObj[user.login].score += level_labels[label.name];
+                    leaderboardObj[user.login].prBreakdown[label.name]++;
+                    break;
                 }
+
+                leaderboardObj[user.login].scoreBreakdown.others += 1;
+                leaderboardObj[user.login].score += 1;
+                leaderboardObj[user.login].prBreakdown.others++;
+            }
         });
     }
 
@@ -73,7 +72,11 @@ async function getLeaderBoard() {
     const projectTasks = projects.map(project => fetchAllPullRequests(project));
     await Promise.all(projectTasks);
 
-    return leaderboard;
+    const leaderBoard = Object.values(leaderboardObj)
+        .sort((a, b) => b.score - a.score)
+        .map((user, index) => ({ ...user, rank: index + 1 }));
+
+    return leaderBoard;
 }
 
-export default getLeaderBoard;
+export default generateLeaderBoard;

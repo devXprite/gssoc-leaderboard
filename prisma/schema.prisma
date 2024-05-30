@@ -11,6 +11,15 @@ datasource db {
 model Leaderboard {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   leaderboard Json
+  year        Int      @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  username     String   @unique
+  pullRequests Json[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

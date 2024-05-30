@@ -1,20 +1,21 @@
 'use client';
 
 import { Pagination } from '@mui/material';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaList, FaSearch } from 'react-icons/fa';
 
 const RESULT_PER_PAGE = 30;
 
-const LeaderboardTable = ({ leaderboardArray }) => {
+const LeaderboardTable = ({ leaderboard, updatedAt }) => {
     const [page, setPage] = useState(1);
     const [searchFilter, setSearchFilter] = useState(null);
     const [tableData, setTableData] = useState(() =>
-        leaderboardArray.slice((page - 1) * RESULT_PER_PAGE, page * RESULT_PER_PAGE),
+        leaderboard.slice((page - 1) * RESULT_PER_PAGE, page * RESULT_PER_PAGE),
     );
 
     useEffect(() => {
-        const filteredData = leaderboardArray.filter(user => {
+        const filteredData = leaderboard.filter(user => {
             if (!searchFilter) return true;
             return user.login.toLowerCase().includes(searchFilter.toLowerCase());
         });
@@ -31,7 +32,7 @@ const LeaderboardTable = ({ leaderboardArray }) => {
                     onChange={e => {
                         setSearchFilter(e.target.value), setPage(1);
                     }}
-                    placeholder={`Search in ${leaderboardArray.length} users`}
+                    placeholder={`Search in ${leaderboard.length} users`}
                 />
                 <button className="rounded-md bg-gray-700 px-5">
                     <FaSearch className="text-base md:text-xl" />
@@ -46,7 +47,7 @@ const LeaderboardTable = ({ leaderboardArray }) => {
                             <th rowSpan={2}>Avatar</th>
                             <th rowSpan={2}>UserName</th>
                             <th rowSpan={2}>Total Pr</th>
-                            <th colSpan={4}>Score</th>
+                            <th colSpan={5}>Score</th>
                             <th rowSpan={2}></th>
                         </tr>
 
@@ -54,11 +55,12 @@ const LeaderboardTable = ({ leaderboardArray }) => {
                             <th className="text-[10px] md:text-sm">Level 1</th>
                             <th className="text-[10px] md:text-sm">Level 2</th>
                             <th className="text-[10px] md:text-sm">Level 3</th>
+                            <th className="text-[10px] md:text-sm">Others</th>
                             <th className="text-[10px] md:text-sm">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tableData.map((user, index) => (
+                        {tableData.map(user => (
                             <tr key={user.login}>
                                 <td>{user.rank}</td>
                                 <td>
@@ -68,24 +70,26 @@ const LeaderboardTable = ({ leaderboardArray }) => {
                                     />
                                 </td>
                                 <td>
-                                    <a
-                                        href={user.url}
-                                        target="_blank"
+                                    <Link
+                                        // href={user.url}
+                                        // target="_blank"
+                                        href={`/user/${user.login}`}
                                         className="flex items-center gap-1 hover:text-primary-500 hover:underline md:gap-4"
                                     >
                                         <FaGithub className=" md:text-xl" />
                                         <span>{user.login}</span>
-                                    </a>
+                                    </Link>
                                 </td>
                                 <td>{user.totalPr}</td>
                                 <td>{user.scoreBreakdown?.level1}</td>
                                 <td>{user.scoreBreakdown?.level2}</td>
                                 <td>{user.scoreBreakdown?.level3}</td>
+                                <td>{user.scoreBreakdown?.others}</td>
                                 <td>{user.score}</td>
                                 <td>
-                                    <a href={`/user/${user.login}`}>
+                                    <Link prefetch={false} href={`/user/${user.login}`}>
                                         <FaList className="mx-auto text-primary-500 md:text-xl" />
-                                    </a>
+                                    </Link>
                                 </td>
                             </tr>
                         ))}
@@ -96,7 +100,7 @@ const LeaderboardTable = ({ leaderboardArray }) => {
             <div className="mt-6">
                 <Pagination
                     color="primary"
-                    count={Math.ceil(leaderboardArray.length / RESULT_PER_PAGE)}
+                    count={Math.ceil(leaderboard.length / RESULT_PER_PAGE)}
                     onChange={(e, page) => {
                         setPage(page);
                         setSearchFilter(null);
