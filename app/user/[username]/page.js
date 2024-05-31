@@ -56,11 +56,11 @@ const page = async ({ params: { username } }) => {
 
     return (
         <>
-            <h3 className="mb-2 mt-6 text-center text-3xl font-semibold">
+            <h3 className="text-center text-2xl font-semibold md:text-3xl">
                 Pull Requests by <span className="text-center text-primary-500">@{username}</span>{' '}
             </h3>
 
-            <p className="mb-8 text-center">
+            <p className="mb-8 mt-1 text-center text-xs italic text-gray-400 md:text-base">
                 Last updated at{' '}
                 {new Date(updatedAt || new Date()).toLocaleString('en-IN', {
                     timeZone: 'Asia/Kolkata',

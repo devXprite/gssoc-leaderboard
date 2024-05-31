@@ -2,38 +2,6 @@ import githubClient from '@/lib/githubClient';
 import consola from 'consola';
 
 async function fetchPullRequests({ owner, name, endCursor = null }) {
-    // const query = `
-    // query($repoOwner: String!, $repoName: String!, $endCursor: String) {
-    //     repository(owner: $repoOwner, name: $repoName) {
-    //       pullRequests(
-    //         first: 100
-    //         labels: ["GSSoC"]
-    //         orderBy: {field: CREATED_AT, direction: DESC}
-    //         states: MERGED
-    //         after: $endCursor
-    //       ) {
-    //         pageInfo {
-    //           endCursor
-    //           hasNextPage
-    //         }
-    //         nodes {
-    //           url
-    //           author {
-    //             login
-    //             avatarUrl
-    //             url
-    //           }
-    //           labels(first: 10) {
-    //             nodes {
-    //               name
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // `;
-
     const query = `
     query ($queryString: String!, $endCursor: String) {
       search(query: $queryString, type: ISSUE, first: 100, after: $endCursor) {
