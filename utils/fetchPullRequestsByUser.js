@@ -22,6 +22,7 @@ const fetchPullRequestsByUser = async ({username, endCursor = null}) => {
                 }
                 repository {
                   name
+                  url
                 }
                 closingIssuesReferences(first: 1) {
                   nodes {

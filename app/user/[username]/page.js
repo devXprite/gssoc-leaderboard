@@ -1,9 +1,4 @@
-// import pullRequests from '@/pullRequests';
-import { db } from '@/lib/db';
-import genrateUserPr from '@/utils/genrateUserPr';
-import consola from 'consola';
-import { headers } from 'next/headers';
-import { RiGitRepositoryLine } from 'react-icons/ri';
+import getUserPr from '@/utils/getUserPr';
 
 const allowedLabels = ['level1', 'level2', 'level3'];
 
@@ -13,45 +8,7 @@ export const generateMetadata = ({ params: { username } }) => {
     };
 };
 
-const getUserPr = async username => {
-    try {
-        const user = await db.user.findUnique({
-            where: {
-                username,
-                updatedAt: { gte: new Date(new Date().getTime() - 8 * 60 * 60 * 1000) },
-            },
-        });
-
-        if (user) {
-            consola.success('Get PullRequests from DB');
-            return {
-                pullRequests: user.pullRequests,
-                updatedAt: user.updatedAt,
-            };
-        }
-
-        consola.warn('User not found in the database, fetching from GitHub ...');
-        const pullRequests = await genrateUserPr(username);
-
-        consola.info('PullRequests fetched from github');
-
-        await db.user.upsert({
-            where: { username },
-            update: { pullRequests: pullRequests },
-            create: { username, pullRequests },
-        });
-
-        consola.success('PullRequests save in db');
-
-        return { pullRequests };
-    } catch (error) {
-        console.log(error);
-        return {};
-    }
-};
-
 const page = async ({ params: { username } }) => {
-    headers();
     const { pullRequests, updatedAt } = await getUserPr(username);
 
     return (

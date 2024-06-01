@@ -36,18 +36,19 @@
 }
 
 @layer components {
-
-    .gradient{
+    .gradient {
         @apply bg-gradient-to-b from-primary-500 to-primary-700;
     }
 
     .page {
         @apply min-h-[calc(100vh-6.75rem)] px-3 py-14;
+
+        &-title {
+            @apply mb-2 text-center text-3xl font-semibold text-primary-500 md:text-4xl;
+        }
     }
 
-    .btn{
-        @apply gradient flex items-center gap-2 rounded-md py-1.5 text-sm font-semibold text-black md:text-base justify-center;
-
-
+    .btn {
+        @apply gradient flex items-center justify-center gap-2 rounded-md py-1.5 text-sm font-semibold text-black md:text-base;
     }
 }
