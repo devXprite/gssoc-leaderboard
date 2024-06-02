@@ -13,29 +13,26 @@ const getUserPr = unstable_cache(
                 },
             });
 
-            if (user?.id){
+            if (user?.id) {
                 consola.success('Get User PullRequests from DB');
-                return {
-                    pullRequests: user.pullRequests,
-                    updatedAt: user.updatedAt,
-                };
+                return user;
             }
 
             consola.warn('User not found in the database, fetching from GitHub ...');
-            const pullRequests = await genrateUserPr(username);
+            const pullRequestsInfo = await genrateUserPr(username);
 
             consola.info('User PullRequests fetched from github');
 
             await db.user.upsert({
                 where: { username },
-                update: { pullRequests: pullRequests },
-                create: { username, pullRequests },
+                update: { ...pullRequestsInfo },
+                create: { username, ...pullRequestsInfo },
             });
 
             consola.success('User PullRequests save in db');
 
             return {
-                pullRequests,
+                ...pullRequestsInfo,
                 updatedAt: new Date(),
             };
         } catch (error) {
@@ -46,7 +43,8 @@ const getUserPr = unstable_cache(
     ['users'],
     {
         tags: ['users'],
-        revalidate: 60 * 60 * 2,
+        // revalidate: 60 * 60 * 2,
+        revalidate: 1,
     },
 );
 

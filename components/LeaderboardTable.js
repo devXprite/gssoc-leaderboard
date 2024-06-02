@@ -48,6 +48,7 @@ const LeaderboardTable = ({ leaderboard, updatedAt }) => {
                             <th rowSpan={2}>UserName</th>
                             <th rowSpan={2}>Total Pr</th>
                             <th colSpan={5}>Score</th>
+                            {/* <th rowSpan={2}>Badge</th> */}
                             <th rowSpan={2}></th>
                         </tr>
 
@@ -87,6 +88,9 @@ const LeaderboardTable = ({ leaderboard, updatedAt }) => {
                                 <td>{user.scoreBreakdown?.level3}</td>
                                 <td>{user.scoreBreakdown?.others}</td>
                                 <td>{user.score}</td>
+                                {/* <td>
+                                    <img className='size-11 mx-auto' src="https://gssoc.girlscript.tech/badges/5.png?imwidth=96" alt="" srcset="" />
+                                </td> */}
                                 <td>
                                     <Link prefetch={false} href={`/user/${user.login}`}>
                                         <FaList className="mx-auto text-primary-500 md:text-xl" />
@@ -96,7 +100,9 @@ const LeaderboardTable = ({ leaderboard, updatedAt }) => {
                         ))}
                     </tbody>
                 </table>
-                <p className="mt-2 w-full text-xs md:text-base text-right italic text-gray-400">* updates in every 24 hours</p>
+                <p className="mt-2 w-full text-right text-xs italic text-gray-400 md:text-base">
+                    * updates in every 24 hours
+                </p>
             </div>
 
             <div className="mt-6">

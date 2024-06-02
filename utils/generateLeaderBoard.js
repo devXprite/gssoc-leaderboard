@@ -1,25 +1,26 @@
 import projects from '@/data/projects';
 import fetchPullRequests from './fetchPullRequests';
-
-const level_labels = {
-    level1: 10,
-    level2: 25,
-    level3: 45,
-};
+import levelScoreCard, { allowedLabels } from '@/data/levelScoreCard';
+import _, { lowerCase } from 'lodash';
 
 async function generateLeaderBoard() {
     let leaderboardObj = {};
 
-    async function processPullRequests(pullRequests) {
-        pullRequests.edges.forEach(edge => {
-            const pr = edge.node;
-            const user = pr.author;
+    const processPullRequests = prArray => {
+        const pullRequests = [];
+        prArray.edges.forEach(edge => pullRequests.push(edge.node));
 
-            if (!leaderboardObj[user.login]) {
-                leaderboardObj[user.login] = {
-                    avatar_url: user.avatarUrl,
-                    login: user.login,
-                    url: user.url,
+        pullRequests.forEach((pr, i) => {
+            const username = pr.author.login;
+            const prLevel = (pr.labels.nodes.find(label => allowedLabels.includes(label.name))?.name || 'others')
+                .trim()
+                .toLowerCase();
+
+            if (!leaderboardObj[username]) {
+                leaderboardObj[username] = {
+                    avatar_url: pr.author.avatarUrl,
+                    login: username,
+                    url: pr.author.url,
                     score: 0,
                     totalPr: 0,
                     scoreBreakdown: {
@@ -37,22 +38,13 @@ async function generateLeaderBoard() {
                 };
             }
 
-            leaderboardObj[user.login].totalPr++;
+            if (allowedLabels.includes(prLevel)) leaderboardObj[username].totalPr += 1;
 
-            for (const label of pr.labels.nodes) {
-                if (label.name in level_labels) {
-                    leaderboardObj[user.login].scoreBreakdown[label.name] += level_labels[label.name];
-                    leaderboardObj[user.login].score += level_labels[label.name];
-                    leaderboardObj[user.login].prBreakdown[label.name]++;
-                    break;
-                }
-
-                leaderboardObj[user.login].scoreBreakdown.others += 1;
-                leaderboardObj[user.login].score += 1;
-                leaderboardObj[user.login].prBreakdown.others++;
-            }
+            leaderboardObj[username].prBreakdown[prLevel] += 1;
+            leaderboardObj[username].scoreBreakdown[prLevel] += levelScoreCard[prLevel];
+            leaderboardObj[username].score += levelScoreCard[prLevel];
         });
-    }
+    };
 
     async function fetchAllPullRequests(project) {
         let hasNextPage = true;
@@ -62,19 +54,21 @@ async function generateLeaderBoard() {
 
         while (hasNextPage) {
             const pullRequests = await fetchPullRequests({ owner, name, endCursor });
-            await processPullRequests(pullRequests);
 
             hasNextPage = pullRequests.pageInfo.hasNextPage;
             endCursor = pullRequests.pageInfo.endCursor;
+
+            processPullRequests(pullRequests);
         }
     }
 
     const projectTasks = projects.map(project => fetchAllPullRequests(project));
     await Promise.all(projectTasks);
 
-    const leaderBoard = Object.values(leaderboardObj)
-        .sort((a, b) => b.score - a.score)
-        .map((user, index) => ({ ...user, rank: index + 1 }));
+    const leaderBoard = _.orderBy(Object.values(leaderboardObj), ['score'], ['desc']).map((user, i) => ({
+        ...user,
+        rank: i + 1,
+    }));
 
     return leaderBoard;
 }

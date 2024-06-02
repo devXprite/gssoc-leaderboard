@@ -19,7 +19,9 @@ model Leaderboard {
 model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   username     String   @unique
+  userStats    Json
   pullRequests Json[]
+  repositories Json[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
