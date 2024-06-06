@@ -40,7 +40,7 @@ const page = () => {
                             ))}
                         </p>
 
-                        <a target="_blank" href={project.project_link} className="btn mt-auto w-full">
+                        <a target="_blank" href={project.project_link} className="btn-gradient mt-auto w-full">
                             <FaGithub />
                             <span>View Project</span>
                         </a>

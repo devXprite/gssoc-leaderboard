@@ -43,8 +43,7 @@ const getUserPr = unstable_cache(
     ['users'],
     {
         tags: ['users'],
-        // revalidate: 60 * 60 * 2,
-        revalidate: 1,
+        revalidate: 60 * 60 * 2,
     },
 );
 

@@ -7,10 +7,7 @@ async function generateLeaderBoard() {
     let leaderboardObj = {};
 
     const processPullRequests = prArray => {
-        const pullRequests = [];
-        prArray.edges.forEach(edge => pullRequests.push(edge.node));
-
-        pullRequests.forEach((pr, i) => {
+        prArray.edges.forEach(({ node: pr }) => {
             const username = pr.author.login;
             const prLevel = (pr.labels.nodes.find(label => allowedLabels.includes(label.name))?.name || 'others')
                 .trim()
@@ -23,18 +20,8 @@ async function generateLeaderBoard() {
                     url: pr.author.url,
                     score: 0,
                     totalPr: 0,
-                    scoreBreakdown: {
-                        level1: 0,
-                        level2: 0,
-                        level3: 0,
-                        others: 0,
-                    },
-                    prBreakdown: {
-                        level1: 0,
-                        level2: 0,
-                        level3: 0,
-                        others: 0,
-                    },
+                    scoreBreakdown: { level1: 0, level2: 0, level3: 0, others: 0 },
+                    prBreakdown: { level1: 0, level2: 0, level3: 0, others: 0 },
                 };
             }
 
@@ -62,8 +49,7 @@ async function generateLeaderBoard() {
         }
     }
 
-    const projectTasks = projects.map(project => fetchAllPullRequests(project));
-    await Promise.all(projectTasks);
+    await Promise.all(projects.map(project => fetchAllPullRequests(project)));
 
     const leaderBoard = _.orderBy(Object.values(leaderboardObj), ['score'], ['desc']).map((user, i) => ({
         ...user,
