@@ -9,10 +9,8 @@ import { NextResponse } from 'next/server';
 export async function GET(req, ctx) {
     headers();
 
-    const key = req.nextUrl.searchParams.get("key")
+    const key = req.nextUrl.searchParams.get('key');
     if (key !== process.env.UPDATE_KEY) return NextResponse.json({ error: 'Invalid key' }, { status: 401 });
-    
-
 
     consola.info('Trying to fetch leaderboard from github');
     const leaderboard = await generateLeaderBoard();
@@ -26,9 +24,18 @@ export async function GET(req, ctx) {
 
     consola.success('Leaderboard saved in db');
 
-    revalidatePath('/', 'layout');
     revalidateTag('users');
-    await axios.get('https://gssoc-leaderboard.vercel.app/api/revalidate')
+    revalidateTag('leaderboard');
+    revalidatePath('/', 'layout');
+
+    try {
+        await Promise.all([
+            axios.get('https://gssoc-leaderboard.vercel.app/api/revalidate'),
+            axios.get('https://gssoc.devxprite.tech/api/revalidate'),
+        ]);
+    } catch (error) {
+        console.log('Error while revalidating', error);
+    }
 
     return NextResponse.json({ ok: true });
 }

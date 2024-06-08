@@ -101,7 +101,7 @@ const LeaderboardTable = ({ leaderboard, updatedAt }) => {
                     </tbody>
                 </table>
                 <p className="mt-2 w-full text-right text-xs italic text-gray-400 md:text-base">
-                    * updates in every 24 hours
+                    * updates in every 1 hour
                 </p>
             </div>
 

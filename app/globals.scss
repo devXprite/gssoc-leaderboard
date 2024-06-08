@@ -22,7 +22,7 @@
             }
 
             tr {
-                @apply odd:bg-gray-800 even:bg-gray-900;
+                @apply odd:bg-gray-800 even:bg-gray-900/75;
             }
         }
         thead {
@@ -58,7 +58,7 @@
     }
 
     .card {
-        @apply rounded-lg border border-gray-700 bg-gray-800 p-3 shadow-lg shadow-black/50 md:p-4;
+        @apply rounded-lg border border-gray-700/75 bg-gray-800/50 p-3 shadow-lg shadow-black/50 md:p-4;
 
         &-title {
             @apply text-lg font-semibold text-primary-500 md:text-xl;

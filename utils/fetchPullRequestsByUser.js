@@ -15,6 +15,7 @@ const fetchPullRequestsByUser = async ({username, endCursor = null}) => {
                 titleHTML
                 url
                 mergedAt
+                createdAt
                 totalCommentsCount
                 changedFiles
                 commits(first:1){

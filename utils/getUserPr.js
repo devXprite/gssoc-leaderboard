@@ -9,7 +9,7 @@ const getUserPr = unstable_cache(
             const user = await db.user.findUnique({
                 where: {
                     username,
-                    updatedAt: { gte: new Date(new Date().getTime() - 6 * 60 * 60 * 1000) },
+                    updatedAt: { gte: new Date(new Date().getTime() - 1 * 60 * 60 * 1000) },
                 },
             });
 
@@ -43,7 +43,7 @@ const getUserPr = unstable_cache(
     ['users'],
     {
         tags: ['users'],
-        revalidate: 60 * 60 * 2,
+        revalidate: 60 * 60 * 1,
     },
 );
 

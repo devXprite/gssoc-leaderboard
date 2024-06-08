@@ -1,8 +1,9 @@
+import PullRequestsTable from '@/components/tables/PullRequestsTable';
+import BarChart from '@/components/charts/BarChart';
+import RepoWiseTable from '@/components/tables/RepoWiseTable';
 import Badges from '@/data/badges';
 import getUserPr from '@/utils/getUserPr';
-import { FaTrophy } from 'react-icons/fa';
-import { FaCodePullRequest } from 'react-icons/fa6';
-import { RiGitRepositoryLine } from 'react-icons/ri';
+import _, { groupBy } from 'lodash';
 
 export const generateMetadata = ({ params: { username } }) => {
     return {
@@ -12,7 +13,18 @@ export const generateMetadata = ({ params: { username } }) => {
 
 const page = async ({ params: { username } }) => {
     const { pullRequests, userStats, repositories, updatedAt } = await getUserPr(username);
-    // console.log(pullRequests);
+
+    const prByDay = _.countBy(
+        pullRequests
+            .sort((a, b) => new Date(a.mergedAt) - new Date(b.mergedAt))
+            .map(pr =>
+                new Date(pr.mergedAt).toLocaleDateString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                    day: '2-digit',
+                    month: 'short',
+                }),
+            ),
+    );
 
     return (
         <>
@@ -66,105 +78,22 @@ const page = async ({ params: { username } }) => {
                 </div>
             </div> */}
 
-            <div className="mx-auto mt-8 w-full max-w-screen-xl overflow-x-auto">
-                <h4 className="mb-2 text-lg font-medium text-gray-300 md:text-xl">List of PullRequests</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Repository</th>
-                            <th>Title</th>
-                            <th>Level</th>
-                            <th>Commits</th>
-                            <th>Comments</th>
-                            <th>Merged At</th>
-                            <th>Related Issues</th>
-                        </tr>
-                    </thead>
+            <div className="card mx-auto mt-8 max-w-screen-xl md:p-8">
+                <h4 className="card-title">List of PullRequests</h4>
 
-                    <tbody>
-                        {pullRequests.map((pr, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td className="max-w-32 truncate text-left text-primary-400 md:max-w-40">
-                                    {pr.repository.name}
-                                </td>
-                                <td className="max-w-72 truncate text-left md:max-w-96">
-                                    <a href={pr.url} target="_blank">
-                                        {pr.titleHTML}
-                                    </a>
-                                </td>
-                                <td>{pr?.level || pr.leval}</td>
-                                <td>{pr?.commits?.totalCount}</td>
-                                <td>{pr.totalCommentsCount}</td>
-                                <td className="whitespace-nowrap">
-                                    {new Date(pr.mergedAt).toLocaleDateString('en-IN', {
-                                        // dateStyle: 'medium',
-                                        day: '2-digit',
-                                        month: 'short',
-                                        year: '2-digit',
-                                    })}
-                                </td>
-                                <td>
-                                    {pr.closingIssuesReferences.nodes.map((issue, index) => (
-                                        <a key={index} target="_blank" href={issue.url} className="text-green-500">
-                                            #{issue.number}
-                                        </a>
-                                    ))}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <p className="mt-2 w-full text-right text-xs italic text-gray-400 md:text-base">
-                    * updates in every 8 hours
-                </p>
+                <PullRequestsTable pullRequests={pullRequests} />
             </div>
 
-            <div className="mx-auto mt-6 w-full max-w-screen-xl overflow-x-auto">
-                <h4 className="mb-2 text-lg font-medium text-gray-300 md:text-xl">Repositories Wise Stats</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th rowSpan={2}>No</th>
-                            <th rowSpan={2}>Repository</th>
-                            <th rowSpan={2}>Total Score</th>
-                            <th colSpan={5}>PullRequests</th>
-                        </tr>
+            {/* <div className="card mx-auto mt-8 max-w-screen-xl md:p-8">
+                <h4 className="card-title">Repositories Wise Stats</h4>
 
-                        <tr className="">
-                            <th className="text-[10px] md:text-sm">Level 1</th>
-                            <th className="text-[10px] md:text-sm">Level 2</th>
-                            <th className="text-[10px] md:text-sm">Level 3</th>
-                            <th className="text-[10px] md:text-sm">Others</th>
-                            <th className="text-[10px] md:text-sm">Total</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {repositories.map((repo, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-
-                                <td className="max-w-72 truncate text-left  text-primary-400 md:max-w-96">
-                                    <a href={repo.url} target="_blank">
-                                        {repo.name}
-                                    </a>
-                                </td>
-                                <td>{repo.totalScore}</td>
-                                <td>{repo.prBreakdown?.level1}</td>
-                                <td>{repo.prBreakdown?.level2}</td>
-                                <td>{repo.prBreakdown?.level3}</td>
-                                <td>{repo.prBreakdown?.others}</td>
-                                <td>{repo.prCount}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <p className="mt-2 w-full text-right text-xs italic text-gray-400 md:text-base">
-                    * updates in every 8 hours
-                </p>
+                <RepoWiseTable repositories={repositories} />
             </div>
+
+            <div className="card mx-auto mt-8 max-w-screen-xl md:px-8">
+                <h2 className="card-title">Activity Graph</h2>
+                <BarChart title={'Pull Requests by Day'} labels={Object.keys(prByDay)} values={Object.values(prByDay)} />
+            </div> */}
         </>
     );
 };
