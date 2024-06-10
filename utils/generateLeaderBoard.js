@@ -25,8 +25,7 @@ async function generateLeaderBoard() {
                 };
             }
 
-            if (allowedLabels.includes(prLevel)) leaderboardObj[username].totalPr += 1;
-
+            leaderboardObj[username].totalPr += 1;
             leaderboardObj[username].prBreakdown[prLevel] += 1;
             leaderboardObj[username].scoreBreakdown[prLevel] += levelScoreCard[prLevel];
             leaderboardObj[username].score += levelScoreCard[prLevel];

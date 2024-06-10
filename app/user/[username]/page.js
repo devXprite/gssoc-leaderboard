@@ -35,7 +35,6 @@ const page = async ({ params: { username } }) => {
             <h3 className="text-center text-2xl font-semibold md:text-3xl">
                 <span className="text-center text-primary-500">@{username}</span>'s Stats
             </h3>
-
             <p className="mt-1 text-center text-xs italic text-gray-400 md:text-base">
                 Last updated at{' '}
                 {new Date(updatedAt || new Date()).toLocaleString('en-IN', {
@@ -49,7 +48,6 @@ const page = async ({ params: { username } }) => {
                     <img key={index} className="size-12 md:size-16" src={badge.src} />
                 ))}
             </div>
-
             {/* <div className="mx-auto mb-12 mt-4 flex max-w-screen-sm flex-col  gap-6 rounded-md border border-gray-700 bg-gray-800 p-4 md:flex-row md:gap-10">
                 <img
                     src={`https://github.com/${username}.png`}
@@ -77,23 +75,20 @@ const page = async ({ params: { username } }) => {
                     </div>
                 </div>
             </div> */}
-
             <div className="card mx-auto mt-8 max-w-screen-xl md:p-8">
                 <h4 className="card-title">List of PullRequests</h4>
 
                 <PullRequestsTable pullRequests={pullRequests} />
             </div>
-
-            {/* <div className="card mx-auto mt-8 max-w-screen-xl md:p-8">
+            <div className="card mx-auto mt-8 max-w-screen-xl md:p-8">
                 <h4 className="card-title">Repositories Wise Stats</h4>
 
                 <RepoWiseTable repositories={repositories} />
             </div>
-
             <div className="card mx-auto mt-8 max-w-screen-xl md:px-8">
                 <h2 className="card-title">Activity Graph</h2>
                 <BarChart title={'Pull Requests by Day'} labels={Object.keys(prByDay)} values={Object.values(prByDay)} />
-            </div> */}
+            </div>{' '}
         </>
     );
 };
