@@ -46,6 +46,7 @@ async function fetchPullRequests({ owner, name, endCursor = null }) {
         return pullRequests;
     } catch (error) {
         console.error('Error fetching pull requests', error);
+        consola.warn('Error while fetching Pull Request for ', owner, name, endCursor)
         return [];
     }
 }

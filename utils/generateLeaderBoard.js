@@ -7,29 +7,31 @@ async function generateLeaderBoard() {
     let leaderboardObj = {};
 
     const processPullRequests = prArray => {
-        prArray.edges.forEach(({ node: pr }) => {
-            const username = pr.author.login;
-            const prLevel = (pr.labels.nodes.find(label => allowedLabels.includes(label.name))?.name || 'others')
-                .trim()
-                .toLowerCase();
+        prArray.edges
+            .filter(({ node: pr }) => pr.author?.login)
+            .forEach(({ node: pr }) => {
+                const username = pr.author.login;
+                const prLevel = (pr.labels.nodes.find(label => allowedLabels.includes(label.name))?.name || 'others')
+                    .trim()
+                    .toLowerCase();
 
-            if (!leaderboardObj[username]) {
-                leaderboardObj[username] = {
-                    avatar_url: pr.author.avatarUrl,
-                    login: username,
-                    url: pr.author.url,
-                    score: 0,
-                    totalPr: 0,
-                    scoreBreakdown: { level1: 0, level2: 0, level3: 0, others: 0 },
-                    prBreakdown: { level1: 0, level2: 0, level3: 0, others: 0 },
-                };
-            }
+                if (!leaderboardObj[username]) {
+                    leaderboardObj[username] = {
+                        avatar_url: pr.author.avatarUrl,
+                        login: username,
+                        url: pr.author.url,
+                        score: 0,
+                        totalPr: 0,
+                        scoreBreakdown: { level1: 0, level2: 0, level3: 0, others: 0 },
+                        prBreakdown: { level1: 0, level2: 0, level3: 0, others: 0 },
+                    };
+                }
 
-            leaderboardObj[username].totalPr += 1;
-            leaderboardObj[username].prBreakdown[prLevel] += 1;
-            leaderboardObj[username].scoreBreakdown[prLevel] += levelScoreCard[prLevel];
-            leaderboardObj[username].score += levelScoreCard[prLevel];
-        });
+                leaderboardObj[username].totalPr += 1;
+                leaderboardObj[username].prBreakdown[prLevel] += 1;
+                leaderboardObj[username].scoreBreakdown[prLevel] += levelScoreCard[prLevel];
+                leaderboardObj[username].score += levelScoreCard[prLevel];
+            });
     };
 
     async function fetchAllPullRequests(project) {
